@@ -7,8 +7,8 @@
             <div class="card">
                 <div class="card-header">{{ __('Edit To Do') }}</div>
                     
-                <div class="card-body">
-                    <x-alert/>                              
+                <div class="card-body">                  
+                    @include('layouts.flash')                              
                     <form action="{{route('todo.update', ['id' => $todo->id])}}" method="post">
                         @csrf
                         @method('patch')
@@ -18,7 +18,7 @@
                             </div>
                             <div class="col-md-4">
                                 <input type="submit" Value="Update" class="btn btn-success"/>
-                                <a href="{{route('todolist')}}" class="btn btn-primary">Back</a>
+                                <a href="{{route('todo.index')}}" class="btn btn-primary">Back</a>
                             </div>
                         </div>                        
                     </form>

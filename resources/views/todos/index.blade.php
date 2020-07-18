@@ -8,8 +8,8 @@
                 <div class="card-header">{{ __('To Do List') }}</div>
 
                 <div class="card-body">
-                    <a href="{{route('createtodo')}}" class="btn btn-success mb-3">Create Todo</a>
-
+                    <a href="{{route('todo.create')}}" class="btn btn-success mb-3">Create Todo</a>
+                    @include('layouts.flash')  
                     <table class="table">
                         <thead>
                             <tr>
@@ -22,10 +22,39 @@
                             @foreach($todos as $todo)
                                 <tr>
                                 <th scope="row">{{$todo->id}}</th>
-                                <td>{{$todo->title}}</td>
+                                <td>
+                                @if($todo->completed)
+                                    <s>{{$todo->title}}</s>
+                                @else
+                                    {{$todo->title}}
+                                @endif
+                                </td>
+
                                 <td>
                                     <a href="{{route('todo.edit', ['id' => $todo->id])}}" class="btn btn-sm btn-primary">Edit</a>
+                                    @if($todo->completed)
+                                        <span onclick="event.preventDefault();
+                                                    document.getElementById('form-incomplete-{{$todo->id}}')
+                                                    .submit()" 
+                                                    class="badge badge-success" style="cursor: pointer;"> Done </span>
+
+                                        <form style="display:none" id="{{'form-incomplete-'.$todo->id}}" method="post" action="{{route('todo.incomplete', ['id' => $todo->id])}}">
+                                            @csrf
+                                            @method('put')
+                                        </form>
+                                    @else
+                                        <span onclick="event.preventDefault();
+                                                    document.getElementById('form-complete-{{$todo->id}}')
+                                                    .submit()" 
+                                                    class="badge badge-dark" style="cursor: pointer;"> Make Complete </span>
+
+                                        <form style="display:none" id="{{'form-complete-'.$todo->id}}" method="post" action="{{route('todo.complete', ['id' => $todo->id])}}">
+                                            @csrf
+                                            @method('put')
+                                        </form>
+                                    @endif
                                 </td>
+
                                 </tr>   
                             @endforeach                         
                         </tbody>
