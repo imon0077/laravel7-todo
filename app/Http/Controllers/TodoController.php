@@ -60,4 +60,10 @@ class TodoController extends Controller
         return redirect()->back()->with('message', 'Task Marked as Incompleted');
     }
 
+    public function delete(Todo $id)
+    {
+        $id->delete();
+        return redirect()->back()->with('message', 'Task Marked as Deleted');
+    }
+
 }
