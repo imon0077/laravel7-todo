@@ -53,6 +53,11 @@ class User extends Authenticatable
         }
     }
 
+    public function todos()
+    {
+        return $this->hasMany(Todo::class);
+    }
+
     /* Mutator */
     // public function setPasswordAttribute($password)
     // {

@@ -7,10 +7,20 @@ use App\Todo;
 
 class TodoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        //$this->middleware('auth')->except('index');
+    }
+
     public function index()
     {
         //$todos = Todo::all();
-        $todos = Todo::orderBy('completed')->get();
+        //$todos = Todo::orderBy('completed')->get();
+
+        //ORM Relationship
+        //$todos = auth()->user()->todos()->orderBy('completed')->get();
+        $todos = auth()->user()->todos->sortBy('completed');
         return view("todos.index", compact('todos'));
     }
 
@@ -19,13 +29,23 @@ class TodoController extends Controller
         return view("todos.create");
     }
 
+    public function show(Todo $todo)
+    {
+        return view("todos.show", compact('todo'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|max:300'
         ]);
 
-        Todo::create($request->all());
+        // $userId = auth()->id();
+        // $request['user_id'] = $userId;
+        //Todo::create($request->all());
+
+
+        auth()->user()->todos()->create($request->all());
 
         return redirect()->back()->with('message', 'To do created successfully');
     }
@@ -36,33 +56,33 @@ class TodoController extends Controller
         return view("todos.edit", compact('todo'));
     }
 
-    public function update(Request $request, Todo $id)
+    public function update(Request $request, Todo $todo)
     {
         $request->validate([
             'title' => 'required|max:300'
         ]);
 
-        $id->update(['title'    => $request->title]);
+        $todo->update(['title'    => $request->title]);
         //return redirect()->back()->with('message', 'Updated!!');
         return redirect(route('todo.index'))->with('message', 'Updated!!');
     }
 
-    public function complete(Todo $id)
+    public function complete(Todo $todo)
     {
-        $id->update(['completed'    => true]);
+        $todo->update(['completed'    => true]);
         return redirect()->back()->with('message', 'Task Marked as Completed');
     }
 
 
-    public function incomplete(Todo $id)
+    public function incomplete(Todo $todo)
     {
-        $id->update(['completed'    => false]);
+        $todo->update(['completed'    => false]);
         return redirect()->back()->with('message', 'Task Marked as Incompleted');
     }
 
-    public function delete(Todo $id)
+    public function destroy(Todo $todo)
     {
-        $id->delete();
+        $todo->delete();
         return redirect()->back()->with('message', 'Task Marked as Deleted');
     }
 

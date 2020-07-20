@@ -10,6 +10,9 @@
                 <div class="card-body">
                     <a href="{{route('todo.create')}}" class="btn btn-success mb-3">Create Todo</a>
                     @include('layouts.flash')  
+
+                    @if($todos->count() > 0)
+
                     <table class="table">
                         <thead>
                             <tr>
@@ -30,7 +33,7 @@
                                                     .submit()" 
                                                     class="badge badge-success" style="cursor: pointer;"> Done </span>
 
-                                        <form style="display:none" id="{{'form-incomplete-'.$todo->id}}" method="post" action="{{route('todo.incomplete', ['id' => $todo->id])}}">
+                                        <form style="display:none" id="{{'form-incomplete-'.$todo->id}}" method="post" action="{{route('todo.incomplete', ['todo' => $todo->id])}}">
                                             @csrf
                                             @method('put')
                                         </form>
@@ -38,9 +41,9 @@
                                         <span onclick="event.preventDefault();
                                                     document.getElementById('form-complete-{{$todo->id}}')
                                                     .submit()" 
-                                                    class="badge badge-dark" style="cursor: pointer;"> Mark as Completed </span>
+                                                    class="badge badge-dark" style="cursor: pointer;"> pending </span>
 
-                                        <form style="display:none" id="{{'form-complete-'.$todo->id}}" method="post" action="{{route('todo.complete', ['id' => $todo->id])}}">
+                                        <form style="display:none" id="{{'form-complete-'.$todo->id}}" method="post" action="{{route('todo.complete', ['todo' => $todo->id])}}">
                                             @csrf
                                             @method('put')
                                         </form>
@@ -51,19 +54,19 @@
                                 @if($todo->completed)
                                     <s>{{$todo->title}}</s>
                                 @else
-                                    {{$todo->title}}
+                                    <a href="{{route('todo.show', ['todo' => $todo->id])}}" class="">{{$todo->title}}</a>
                                 @endif
                                 </td>
 
                                 <td>
-                                    <a href="{{route('todo.edit', ['id' => $todo->id])}}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="{{route('todo.edit', ['todo' => $todo->id])}}" class="btn btn-sm btn-primary">Edit</a>
                                     
                                     <span onclick="event.preventDefault();
                                                 document.getElementById('form-delete-{{$todo->id}}')
                                                 .submit()" 
                                                 class="btn btn-sm btn-danger" style="cursor: pointer;"> Del </span>
 
-                                    <form style="display:none" id="{{'form-delete-'.$todo->id}}" method="post" action="{{route('todo.delete', ['id' => $todo->id])}}">
+                                    <form style="display:none" id="{{'form-delete-'.$todo->id}}" method="post" action="{{route('todo.destroy', ['todo' => $todo->id])}}">
                                         @csrf
                                         @method('delete')
                                     </form>
@@ -74,7 +77,10 @@
                             @endforeach                         
                         </tbody>
                         </table>
-
+                        @else 
+                        <br/>
+                        <span>No Task Available!!</span>
+                        @endif
                 </div>
                 
             </div>
