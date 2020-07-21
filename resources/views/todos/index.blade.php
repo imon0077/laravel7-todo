@@ -5,10 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('To Do List') }}</div>
+                <h5 class="card-header text-white bg-success">{{ __('To Do List') }}</h5>
 
                 <div class="card-body">
-                    <a href="{{route('todo.create')}}" class="btn btn-success mb-3">Create Todo</a>
+                    
+                    <a href="{{route('todo.create')}}" class="btn btn-success btn-sm mb-3"><i class="fa fa-plus"></i> Add New Todo</a>
                     @include('layouts.flash')  
 
                     @if($todos->count() > 0)
@@ -17,7 +18,7 @@
                         <thead>
                             <tr>
                             <th scope="col">#</th>
-                            <th scope="col"></th>
+                            <th scope="col">Status</th>
                             <th scope="col">Title</th>
                             <th scope="col">Action</th>
                             </tr>
@@ -59,12 +60,12 @@
                                 </td>
 
                                 <td>
-                                    <a href="{{route('todo.edit', ['todo' => $todo->id])}}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="{{route('todo.edit', ['todo' => $todo->id])}}" class="text-primary mx-2"><i class="fa fa-pencil fa-lg"></i></a>
                                     
                                     <span onclick="event.preventDefault();
                                                 document.getElementById('form-delete-{{$todo->id}}')
                                                 .submit()" 
-                                                class="btn btn-sm btn-danger" style="cursor: pointer;"> Del </span>
+                                                class="text-danger" style="cursor: pointer;"> <i class="fa fa-trash fa-lg"></i> </span>
 
                                     <form style="display:none" id="{{'form-delete-'.$todo->id}}" method="post" action="{{route('todo.destroy', ['todo' => $todo->id])}}">
                                         @csrf
