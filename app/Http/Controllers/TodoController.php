@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Todo;
+use App\step;
 
 class TodoController extends Controller
 {
@@ -31,12 +32,12 @@ class TodoController extends Controller
 
     public function show(Todo $todo)
     {
+        //return $todo->steps;
         return view("todos.show", compact('todo'));
     }
 
     public function store(Request $request)
     {
-        dd($request->all());
         $request->validate([
             'title' => 'required|max:300'
         ]);
@@ -45,9 +46,13 @@ class TodoController extends Controller
         // $request['user_id'] = $userId;
         //Todo::create($request->all());
 
-
-        auth()->user()->todos()->create($request->all());
-
+        $todo = auth()->user()->todos()->create($request->all());
+        if($request->step){
+            foreach ($request->step as $step) {
+                $todo->steps()->create(['name'   =>  $step]);
+            }
+        }
+        
         return redirect()->back()->with('message', 'To do created successfully');
     }
 
@@ -64,6 +69,21 @@ class TodoController extends Controller
         ]);
 
         $todo->update(['title'    => $request->title]);
+
+        if($request->stepName){
+            foreach ($request->stepName as $key => $value) {
+                $id = $request->stepId[$key];
+
+                if(!$id){
+                    $todo->steps()->create(['name'   =>  $value]);
+                }
+                else{
+                    $step = step::find($id);
+                    $step->update(['name'   =>  $value]);
+                }
+            }
+        }
+
         //return redirect()->back()->with('message', 'Updated!!');
         return redirect(route('todo.index'))->with('message', 'Updated!!');
     }
@@ -83,6 +103,7 @@ class TodoController extends Controller
 
     public function destroy(Todo $todo)
     {
+        $todo->steps->each->delete();
         $todo->delete();
         return redirect()->back()->with('message', 'Task Marked as Deleted');
     }

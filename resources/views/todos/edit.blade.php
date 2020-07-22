@@ -21,7 +21,11 @@
                                 <textarea name="description" rows="3" class="form-control" placeholder="Descrpition">{{$todo->description}}</textarea>
                             </div>
 
-                            <div class="col-md-4 mt-3">
+                            
+                            @livewire('edit-step', ['steps' => $todo->steps])
+
+
+                            <div class="col-md-8 mt-3">
                                 <input type="submit" Value="Update" class="btn btn-success"/>
                                 <a href="{{route('todo.index')}}" class="btn btn-primary">Back</a>
                             </div>
